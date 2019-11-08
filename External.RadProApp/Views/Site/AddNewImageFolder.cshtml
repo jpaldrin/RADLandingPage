@@ -1,0 +1,105 @@
+﻿@model External.RadProApp.ViewModel.ImageViewModel
+@{
+    ViewBag.Title = "AddNewImageFolder";
+    Layout = null;
+}
+
+@using (Html.BeginForm("AddNewImageFolder", "Site", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.ReturnUrl)
+    <!--Taking the Pre Site Inspection Photos-->
+    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-folder"></i> Create Image(s) Folder</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        @Html.Label("Select Site", new { @class = "control-label col-md-4" })
+                        @Html.DropDownListFor(model => model.SiteIds, Model.SitesList, new { @class = "form-control selectpicker", @data_live_search = "true" })
+                        @Html.ValidationMessageFor(model => model.SitesList, "", new { @class = "text-danger" })
+
+
+                    </div>
+                    <div class="form-group">
+                        <select class="selectpicker">
+                            <option id="FileName" name="FileName" value="Pre-Site">Pre-Site</option>
+                            <option id="FileName" name="FileName" value="AMF">AMF</option>
+                            <option id="FileName" name="FileName" value="CloseOut">Closeout</option>
+                        </select>
+                    </div>
+                    <!--Presite Inspection Photos.-->
+                    <div class="form-group">
+                        <!--Set Image Uploader-->
+                        <div class="section-header" align="center" style="margin-top: 15%;">
+                            <span>
+                                <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" height="240" width="100%" class="avatar  img-thumbnail" alt="avatar">
+                                <span style="font-size:1.75em; font-weight:100; font-family: Montserrat, sans-serif;"></span>
+
+                                <input type="file" name="Image" class="file-upload text-sm-left btn btn-outline-info">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    <input type="submit" value="Upload" class="btn btn-success" href="@Model.ReturnUrl" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            var readURL = function (input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.avatar').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".file-upload").on('change', function () {
+                readURL(this);
+            });
+        });
+
+    </script>
+}
+
+
+@*<script>
+            var map, datasource, client;
+
+            function GetMap() {
+                //Add Map Control JavaScript code here.
+            }
+    </script>*@
+
+@*<section onload="GetMap()">
+        <div id="myMap"></div>
+    </section>*@
+
+@*<script>
+        //Instantiate a map object
+    var map = new atlas.Map("myMap", {
+        //Add your Azure Maps subscription key to the map SDK. Get an Azure Maps key at https://azure.com/maps
+        authOptions: {
+           authType: '@ViewBag.AzureMapsKey',
+            subscriptionKey: '<@ViewBag.AuthType>'
+
+
+        }
+    });
+    </script>*@

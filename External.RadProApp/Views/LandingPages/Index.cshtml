@@ -1,0 +1,22 @@
+﻿@model IEnumerable<DAL.Radio.Model.LandingPage>
+
+@{
+    ViewBag.Title = "Content Manager for Landing Page";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+    <div class="row">
+        <div class="container">
+            @*<p>@Html.ActionLink("Create New", "Create")</p>*@
+            @foreach (var item in Model)
+            {
+
+            <p>@Html.ActionLink("Edit", "Edit", new { id = item.LandingPageId }) </p>
+            @*<p>@Html.ActionLink("Details", "Details", new { id = item.LandingPageId }) </p>
+            <p>@Html.ActionLink("Delete", "Delete", new { id = item.LandingPageId })</p>*@ 
+            }
+        </div>
+        
+    </div>
+

@@ -1,0 +1,16 @@
+﻿@model External.RadProApp.ViewModel.ImageListViewModel
+@using External.RadProApp.Helpers
+@{
+    ViewBag.Title = "Images";
+}
+
+
+@foreach (var p in Model.Images)
+{
+    @Html.Partial("ImageSummary", p)
+}
+
+<div class="btn-group pull-right">
+    @Html.PageLinks(Model.PagingInfo, x => Url.Action("List",
+        new { page = x, category = Model.CurrentCategory }))
+</div>

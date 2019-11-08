@@ -1,0 +1,111 @@
+﻿@model External.RadProApp.Models.ExternalLoginConfirmationViewModel
+@{
+    ViewBag.Title = "Register";
+}
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        .hero {
+            /* Sizing */
+            width: 100vw;
+            height: 100vh;
+            /* Flexbox stuff */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Text styles */
+            text-align: center;
+            color: white;
+            /* Background styles */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)), url('../../Image/site/intro-bg.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+            .hero h1 {
+                /* Text styles */
+                font-size: 5em;
+                /* Margins */
+                margin-top: 0;
+                margin-bottom: 0.5em;
+            }
+
+            .hero .btn {
+                /* Positioning and sizing */
+                display: block;
+                width: 200px;
+                /* Padding and margins */
+                padding: 1em;
+                margin-top: 50px;
+                margin-left: auto;
+                margin-right: auto;
+                /* Text styles */
+                color: white; /* CHANGE THIS LINE */
+                text-decoration: none;
+                font-size: 1.5em;
+                /* Border styles */
+                border: 3px solid white; /* CHANGE THIS LINE */
+                border-radius: 20px;
+            }
+
+            .hero .btn:hover {
+                /* Positioning and sizing */
+                display: block;
+                width: 200px;
+                /* Padding and margins */
+                padding: 1em;
+                margin-top: 50px;
+                margin-left: auto;
+                margin-right: auto;
+                /* Text styles */
+                color: blue; /* CHANGE THIS LINE */
+                text-decoration: none;
+                font-size: 1.5em;
+                /* Border styles */
+                border: 3px solid white; /* CHANGE THIS LINE */
+                border-radius: 20px;
+                background: rgba(255, 255, 255, 0.15);
+            }
+    </style>
+    <section class="hero" id="externalLogingCallback">
+        <div class="hero-inner">
+            <div align="center" style="margin-top: 5%;">
+                <img src="~/Image/site/linked-inImage.png" height="150" width="150" style="border: 5px #333 solid;" alt="radprosite.com" />
+            </div>
+            <br />
+            <h3>Associate your @ViewBag.LoginProvider account.</h3>
+
+            @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <h4>Association Form</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <p class="text-info">
+                    You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
+                    Please enter a user name for this site below and click the Register button to finish
+                    logging in.
+                </p>
+                
+                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                    <div>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                    <div>
+                        <input type="submit" class="btn btn-default" value="Register" />
+                    </div>
+              
+
+            }
+        </div>
+    </section>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

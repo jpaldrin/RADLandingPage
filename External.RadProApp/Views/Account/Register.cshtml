@@ -1,0 +1,368 @@
+﻿@model External.RadProApp.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<link href="~/Content/register.css" rel="stylesheet" />
+<section class="clearfix">
+    <div class="container">
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="wow fadeInUp">
+                <div class="row">
+                    <div class="col-md-8">
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <small class="text-danger">@User.Identity.Name  you need to <span>log off </span> before you can create a new account.</small>
+                        }
+                        else
+                        {
+                            <div class="section-header" style="margin-top: 15%;">
+
+                                <span>
+                                    <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" height="75" width="75" class="avatar rounded-circle img-thumbnail" alt="avatar">
+                                    <span style="font-size:1.75em; font-weight:100; font-family: Montserrat, sans-serif;">Registration  </span> <input type="file" name="Image" class="file-upload text-sm-left btn btn-outline-info">
+                                </span>
+
+                            </div>
+                            <br />
+                        }
+                    </div>
+                    <div class="form-group col-md-3">
+                        <div id="zipbox">
+                            <br />
+                            <br />
+                            @Html.EditorFor(model => model.PostCode, new { htmlAttributes = new { @class = "form-control success error", @id = "PostCode", @name = "PostCode", placeholder = "Enter Post Code" } })
+                        </div>
+                    </div>
+                </div>
+                <a class="navbar-brand js-scroll-trigger" href="/Account/login"> @ViewBag.LoginTitle</a>
+                <script>
+                    $(function () {
+                        $(document).ready(function () {
+                            $('#city').hide();
+                            $('#state').hide();
+                            $('#county').hide();
+                            $('#lat').hide();
+                            $('#log').hide();
+                            $('#save').hide();
+                            $('#errorCity').hide();
+                            $('#errorState').hide();
+                        });
+                        $("#PostCode").keyup(function () {
+                            processNewZIP();
+                        })
+                    });
+                    function processNewZIP() {
+                        try {
+                            var timeEnd = null;
+                            var timeStart = performance.now();
+                        } catch (e) { }
+                        //--> Our input
+                        var zipcode = $("#PostCode").val()
+                        $("#PostCode").removeClass('success error');
+                        //--> U.S. and Canadian and more than 5 digits, but less than 7
+                        if (zipcode.length < 5 || zipcode.length > 7) {
+                            $("#PostCode").addClass('error');
+
+                            //--> Canadian Postal Codes must pass validation
+                        } else if ((zipcode.length > 5 && zipcode.length < 7) && isCAPostalCode(zipcode) == false) {
+                            $("#PostCode").addClass('error');
+
+                            //--> Must be 5 digit U.S. ZIP or 6/7 character Canadian Postal Code
+                        } else if ((zipcode.length == 5 && isUSZipCode(zipcode)) || ((zipcode.length == 6 || zipcode.length == 7) && isCAPostalCode(zipcode) == true)) {
+                            var apikey = 'UE1WLFA60YRNQ9RGA4SR';
+                            var url = "https://api.zip-codes.com/ZipCodesAPI.svc/1.0/QuickGetZipCodeDetails/" + zipcode + "?key=" + apikey;
+
+                            $("#PostCode").addClass('success');
+
+                            //--> Hide the data fields (in case they changed)
+                            $('#city').fadeOut();
+                            $('#state').fadeOut();
+                            $('#lat').fadeOut();
+                            $('#log').fadeOut();
+                            $('#save').show();
+                            $('#errorState').fadeIn();
+                            $('#errorCity').fadeIn();
+                            $('#errorLat').fadeIn();
+                            $('#errorLog').fadeIn();
+                            //--> Get & Show Response Data
+                            $.ajax({
+                                url: url,
+                                cache: true,
+                                dataType: "json",
+                                type: "GET",
+                                success: function (result, success) {
+                                    //--> We have success
+                                    $("#PostCode").removeClass('error');
+                                    $("#PostCode").addClass('success');
+                                    //-->Populate the fields
+                                    if (result.State && result.State != "") {
+                                        $("#State").val(result.State);
+                                        $("#State").addClass('form-control');
+                                        $('#errorState').fadeOut();
+                                        $('#state').fadeIn(500);
+                                    }
+                                    if (result.City && result.City != "") {
+                                        $("#City").val(result.City);
+                                        $("#City").addClass('form-control');
+                                        $('#errorCity').fadeOut();
+                                        $('#city').fadeIn(500);
+                                    }
+                                    if (result.Latitude && result.Latitude != "") {
+                                        $("#Latitude").val(result.Latitude);
+                                        $('#lat').slideDown();
+                                    }
+                                    if (result.Longitude && result.Longitude != "") {
+                                        $("#Longitude").val(result.Longitude);
+                                        $('#log').slideDown();
+                                    }
+                                    try {
+                                        var timeEnd = performance.now();
+                                        document.getElementById("time").innerHTML = ((timeEnd - timeStart) / 1000).toFixed(5) + " sec";
+                                    } catch (e) { }
+                                },
+                                error: function (result, success) {
+                                    $("#PostCode").addClass('error');
+                                }
+                            });
+                        }
+                    }
+                    //--> Check Canadian Postal Format (ANA NAN)
+                    function isCAPostalCode(postal) {
+                        var regex = /^([A-Z][0-9][A-Z])\s*([0-9][A-Z][0-9])$/;
+                        if (regex.test(postal))
+                            return true;
+                        else return false;
+                    }
+                    //--> Check U.S. ZIP Code Format (NNNNN)
+                    function isUSZipCode(postal) {
+                        var regex = /^([0-9][0-9][0-9][0-9][0-9])$/;
+                        if (regex.test(postal))
+                            return true;
+                        else return false;
+                    }
+                    function populateFromJSON(obj) {
+                        jQuery.each(JSON.parse(obj.rel), function (i, val) {
+                            document.getElementById(i).value = val;
+                            processNewZIP();
+                        });
+                    }
+                    //--> Take out of secure mode, if activated
+                    if (window.location.protocol !== 'https:') {
+                        window.location = 'https://' + window.location.hostname + window.location.pathname + window.location.hash;
+                    }
+                </script>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <div>
+                            <label class="switch" for="checkbox">
+                                @Html.RadioButtonFor(x => x.AcceptTerms, "True", new { @id = "checkbox" })
+                                <span class="slider round"></span>
+                            </label>
+                            <div style=" margin-left: 65px; margin-top: -42.5px;">You agree with <a id="showTermsofService" href="#">Terms Of Service and Privacy Policy</a></div>
+                        </div>
+                        <small class="text-danger"> @Html.ValidationMessageFor(model => model.AcceptTerms)</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TextBoxFor(model => model.Telephone, new { @class = "form-control", @id = "phoneNumber1", @placeholder = "📞  Mobile Only" })
+                        <small class="text-danger"> @Html.ValidationMessageFor(x => x.Telephone)</small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "Email Address" })
+                        <small class="text-danger"> @Html.ValidationMessageFor(x => x.Email)</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TextBoxFor(model => model.FName, new { @class = "form-control", placeholder = "First Name: John " })
+                        <small class="text-danger">@Html.ValidationMessageFor(x => x.FName)</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TextBoxFor(model => model.LName, new { @class = "form-control", placeholder = "Last Name:  Doe" })
+                        <small class="text-danger">@Html.ValidationMessageFor(x => x.LName)</small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @id = "myInput", placeholder = "Password", @OnClick = "showPassword()" })
+                        <small class="text-danger">@Html.ValidationMessageFor(x => x.Password)</small>
+                    </div>
+                    <div class="form-group col-md-5">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @id = "myInput", placeholder = "Confirm Password", @OnClick = "showPassword()" })
+                        <small class="text-danger">@Html.ValidationMessageFor(x => x.ConfirmPassword)</small>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <a id="passHelp" onclick="JSalert()"><label class="badge badge-secondary">Help ? </label></a>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                        @Html.TextBoxFor(model => model.Address, new { @class = "form-control", placeholder = "Legal Address", @id = "Address" })
+                        <small class="text-danger">@Html.ValidationMessageFor(x => x.Address)</small>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div id="city">
+                            @Html.TextBoxFor(model => model.City, new { htmlAttributes = new { @class = "form-control ", @id = "City", @name = "City", @Value = @Request["City"] } })
+                        </div>
+                        <div id="errorCity"><span class="text-danger">*Invalid </span></div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <div id="state">
+                            @Html.TextBoxFor(model => model.State, new { htmlAttributes = new { @class = "form-control", @id = "State", @name = "State", @Value = @Request["State"] } })
+                        </div>
+                        <div id="errorState"><span class="text-danger"> Postalcode </span></div>
+                    </div>
+                    <div class="form-group col-md-9">
+                        <span id="lat">
+                            @Html.TextBoxFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control", @Title = "Latitude", @id = "Latitude", @name = "Latitude", @Value = @Request["Latitude"] } })
+                            <sup>Latitude</sup>
+                        </span>
+                        <br />
+                        <span id="log">
+                            @Html.TextBoxFor(model => model.Longitude, new { htmlAttributes = new { @class = "form-control", @Title = "Longitude", @id = "Longitude", @name = "Longitude", @Value = @Request["Longitude"] } })
+                            <sup>Longitude</sup>
+                        </span>
+                    </div>
+                    <div class="form-group col-md-3">
+
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+
+                    </div>
+                    <div class="col-md-6">
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <h3>Log Off before registering a new account.</h3>
+                        }
+                        else
+                        {
+                            <div id="save" class="pull-right">
+                                <a class="btn btn-link" href="/Home/Index">Cancel </a> <span style="margin-left:50px;"></span><input type="submit" id="btnSubmit" class="btn btn-success btn-xl text-uppercase" value="Register" />
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+
+</section>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#passHelp").on("click", function () {
+                Swal.mixin({
+                    input: 'text',
+                    confirmButtonText: 'Next &rarr;',
+                    showCancelButton: true,
+                    progressSteps: ['1', '2', '3']
+                }).queue([
+                    {
+                        imageUrl: 'https://radprosite.com/Image/site/logo.png',
+                        imageWidth: 100,
+                        imageHeight: 100,
+                        imageAlt: 'radprosite',
+                        title: 'Password Generator',
+                        text: 'Enter a: Person, Place Thing, Quality, or Idea',
+                        inputattributes: {
+                            'autocapitalize': 'on',
+                        },
+                        inputValidator: (result) => {
+                            return !result && 'Please type a noun greater than 3 letter(s).'
+                        }
+                    },
+                    {
+                        imageUrl: 'https://radprosite.com/Image/site/logo.png',
+                        imageWidth: 100,
+                        imageHeight: 100,
+                        imageAlt: 'Eviction Boss',
+                        title: 'Enter a Symbol',
+                        text: '! # % & * ( ) enter one or more symbols...',
+                        inputValidator: (result) => {
+                            return !result && 'At least one Symbol'
+                        }
+                    },
+                    {
+                        imageUrl: 'https://radprosite.com/Image/site/logo.png',
+                        imageWidth: 100,
+                        imageHeight: 100,
+                        imageAlt: 'Eviction Boss',
+                        title: 'A Number',
+                        type: 'number',
+                        text: 'Do you have a number 0-9 you need at least one?',
+                        inputValidator: (result) => {
+                            return !result && 'A number 0-9 is required'
+                        }
+                    },
+
+                ]).then((result) => {
+                    if (result.value) {
+                        Swal.fire({
+                            title: 'A possible password!',
+                            text: 'NOW TYPE WITHOUT USING COMMA',
+
+                            html:
+                                'Tele' + result.value,
+                            confirmButtonText: 'Got it?',
+
+                        })
+
+                    }
+                })
+            });
+        });
+    </script>
+    <script>
+        function showPassword() {
+            var x = document.getElementById("myInput");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var readURL = function (input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.avatar').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".file-upload").on('change', function () {
+                readURL(this);
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#showTermsofService").on("click", function () {
+                Swal.fire({
+                    title: 'Nope!',
+                    text: 'We do not sell, trade, or market personal or company data. We collect only what we need for you to use the site. That is it! Email, Address, and Telephone are kept private and never sold. We take this seriously. If you login with linked-In we capture your email, work history, achievements, and certifications - and build a resume using our one click hire a pro feature to a tower foreman within your work radius. Google Maps Api is on our side, we share nothing with Google and Google is not capturing our cookies. All our Cookies are private for the use of the application and when you login using Linked-In we stringly suggest that you read their cookie policy. RadProsSite does not SELL TRADE OR BARDER YOUR DATA. Thank you. ',
+                    imageUrl: 'https://radprosite.com/Image/site/linked-inImage.png',
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    imageAlt: 'Custom image',
+                    animation: false
+                })
+            });
+        });
+    </script>
+    <script src="~/Scripts/register.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+}

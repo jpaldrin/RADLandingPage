@@ -1,0 +1,17 @@
+﻿@{
+    var controller = @ViewContext.RouteData.Values["controller"].ToString();
+    var action = @ViewContext.RouteData.Values["action"].ToString();
+    var area = (@ViewContext.RouteData.DataTokens["area"] ?? "").ToString();
+}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="@action">
+        @if (controller == "Dashboard")
+        {
+            @Html.ActionLink(@controller, @action, @controller)<span> /</span> @Html.ActionLink(@action, @action, @controller);
+        }
+        else
+        {
+            @Html.ActionLink("Dashboard", "Overview", "Dashboard")<span> /</span> @Html.ActionLink(@controller, "Index", @controller) <span> /</span> @Html.ActionLink(@action, @action, @controller);
+        }
+    </li>
+</ol>

@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Email Verification";
+}
+<div style="margin-top: 5%;"></div>
+<section align="center">
+    <img src="https://radprosite.com/Image/site/logo.png" style="height: 150px; width: auto;" alt="radprosite.com" />
+    <div class="section-header">
+        <h2>@ViewBag.Title !</h2>
+        <h3>You've made a great choice... </h3>
+        <br />
+    </div>
+    <div>
+        <h4 style="color: red;">Important!</h4>
+        <h5>Sometimes our email will be in SPAM INBOX.</h5>
+        <h6 style="color: red;">
+            <br />
+            @ViewBag.Message
+        </h6>
+    </div>
+</section>

@@ -1,0 +1,434 @@
+﻿@model External.RadProApp.ViewModel.SiteViewModel
+@{
+    ViewBag.Title = "Manager";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<link href="~/Content/dashboard/project/site.css" rel="stylesheet" />
+<style>
+    ul li {
+        list-style: none;
+    }
+    .imagePreview {
+    width: 100%;
+    height: 180px;
+    background-position: center center;
+  background:url(http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg);
+  background-color:#fff;
+    background-size: cover;
+  background-repeat:no-repeat;
+    display: inline-block;
+  box-shadow:0px -3px 6px 2px rgba(0,0,0,0.2);
+}
+.btn-upload
+{
+  display:block;
+  border-radius:0px;
+  box-shadow:0px 4px 6px 2px rgba(0,0,0,0.2);
+  margin-top:-5px;
+}
+.imgUp
+{
+  margin-bottom:15px;
+}
+.del
+{
+  position:absolute;
+  top:0px;
+  right:15px;
+  width:30px;
+  height:30px;
+  text-align:center;
+  line-height:30px;
+  background-color:rgba(255,255,255,0.6);
+  cursor:pointer;
+}
+.imgAdd
+{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background-color:#4bd7ef;
+  color:#fff;
+  box-shadow:0px 0px 2px 1px rgba(0,0,0,0.2);
+  text-align:center;
+  line-height:30px;
+  margin-top:0px;
+  cursor:pointer;
+  font-size:15px;
+}
+</style>
+@using (Html.BeginForm("Manager", "Site", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="container primary-content">
+        <!-- PRIMARY CONTENT HEADING -->
+        <div class="primary-content-heading clearfix">
+            <h2>9ME2145A - IsActive - IsBid - IsNotActive</h2>
+            <hr style="border:1px solid #fff">
+            <div class="sticky-content pull-right">
+                <div class="btn-group btn-dropdown">
+                    <button type="button" class="btn btn-default btn-sm btn-favorites" data-toggle="dropdown"><i class="fa fa-android-star"></i> Favorites</button>
+
+                    @*<li><a href="#"><i class="fa fa-pie-graph"></i> <span>Statistics</span></a></li>
+                        <li><a href="#"><i class="fa fa-email"></i> <span>Inbox</span></a></li>
+                        <li><a href="#"><i class="fa fa-chatboxes"></i> <span>Chat</span></a></li>
+                        <li><a href="#"><i class="fa fa-help-circled"></i> <span>Help</span></a></li>
+                        <li><a href="#"><i class="fa fa-gear-a"></i> <span>Settings</span></a></li>
+                        <li><a href="#"><i class="fa fa-help-buoy"></i> <span>Support</span></a></li>*@
+
+
+
+                </div>
+                <button type="button" class="btn btn-default btn-sm btn-quick-task" data-toggle="modal" data-target="#quick-task-modal"><i class="fa fa-edit"></i> Quick Task -- Create / Edit Assign to Worker RoleId</button>
+                <br>
+                <br>
+            </div>
+            <!-- quick task modal -->
+            <div class="modal fade" id="quick-task-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="myModalLabel">Quick Task</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="task-title" class="control-label sr-only">Title</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="task-title" placeholder="Title">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label sr-only">Description</label>
+                                    <div class="col-sm-12">
+                                        <textarea class="form-control" name="task-description" rows="5" cols="30" placeholder="Description"></textarea>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save Task</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end quick task modal -->
+        </div>
+        <!-- END PRIMARY CONTENT HEADING -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="project-section general-info">
+                    <h3>General Info</h3>
+                    <button type="button" href="/Site/Edit/@Model.Id" class="btn btn-sm btn-default pull-right"><i class="fa fa-compose"></i> Edit Project</button>
+                    <p id="description">
+                        MAYBE SOW DETAILS -- ?<br />
+                        GENERAL CONTRACTOR AGREES TO COMPLY WITH THE BELOW LISTED SPECIFICATIONS OF THIS SCOPE OF WORK IN ADDITION TO THE CONSTRUCTION DRAWINGS AND THE RF DATA SHEET:
+                    </p>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <dl class="dl-horizontal">
+                                <dt>Date:</dt>
+                                <dd>@Model.LastModified.ToLongDateString()</dd>
+                                <dt>Duration:</dt>
+                                <dd>90 days <span class="text-muted"><small>(50 days remaining)</small></span></dd>
+                                <dt>Client:</dt>
+                                <dd><a href="#">T-Mobile</a></dd>
+                                <dt>Priority:</dt>
+                                <dd><span class="label label-danger">HIGH</span></dd>
+                                <dt>Status:</dt>
+                                <dd><span class="label label-success">ACTIVE</span></dd>
+                                <dt>Team:</dt>
+                                <dd>
+                                    <ul class="list-inline team-list">
+                                        <li>
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-circle" alt="Avatar">
+                                            <p><a href="#"><strong>Set DDL of Employee by the ForemanId</strong></a></p>
+                                            <span class="text-muted">Foreman Name</span>
+                                        </li>
+
+                                    </ul>
+                                </dd>
+                            </dl>
+
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="status-chart project-progress bottom-30px">
+                                <div class="pie-chart" data-percent="60"><span class="percent">60%</span><canvas height="100" width="100"></canvas></div>
+                                <span class="chart-title">OVERALL PROGRESS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6 col-xs-12">
+                            <h3>Ground Crew</h3>
+                            <ul>
+                                <li>
+                                    <a class="text-success" href="#">Green Hand</a>
+                                    <a class="text-dark" href="#">Hand</a>
+                                    <a class="text-danger" href="#">Top Hand</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-xs-12">
+                            <h3>Tower Crew</h3>
+                            <ul>
+                                <li>
+                                    <a class="text-info" href="#"> Tower Tech III</a>
+                                    <a class="text-warning" href="#"> Tower Tech II</a>
+                                    <a class="text-danger" href="#"> Tower Tech I</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p>Create two radio buttons, hide, show for Redline or As Built.</p>
+                        <div class="col-md-12">
+                            <select class="selectpicker" multiple data-live-search="true">
+                                <optgroup label="Redlining" data-max-options="1">
+                                    <option>RFDS</option>
+                                    <option>Structural Analysis</option>
+                                    <option>Contruction Drawing</option>
+                                </optgroup>
+                                <optgroup label="As Built" data-max-options="1">
+                                    <option>RFDS</option>
+                                    <option>Structural Analysis</option>
+                                    <option>Contruction Drawing</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-section activity">
+                    <h3>Activity</h3>
+                    <ul class="list-unstyled project-activity-list">
+                        <li>
+                            <div class="media activity-item">
+                                <i class="fa fa-checkmark-circled pull-left text-success"></i>
+                                <div class="media-body">
+                                    <p class="activity-title">All project tasks are on schedule</p>
+                                    <small class="text-muted">2m ago</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media activity-item">
+                                <a href="#" class="pull-left">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Avatar" class="media-object avatar">
+                                </a>
+                                <div class="media-body">
+                                    <p class="activity-title"><a href="#">Michael</a> has achieved 80% of his completed tasks</p>
+                                    <small class="text-muted">36m ago</small>
+                                </div>
+                                <div class="btn-group pull-right activity-actions">
+                                    <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-ios-arrow-down"></i>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a href="#">Message Michael</a></li>
+                                        <li><a href="#">Assign Task</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media activity-item">
+                                <i class="fa fa-unlocked pull-left text-danger"></i>
+                                <div class="media-body">
+                                    <p class="activity-title">You have unsecure file permission on this project. Go to <a href="">File Manager</a> to fix it</p>
+                                    <small class="text-muted">1h ago</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media activity-item">
+                                <a href="#" class="pull-left">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="Avatar" class="media-object avatar">
+                                </a>
+                                <div class="media-body">
+                                    <p class="activity-title"><a href="#">Jason</a> has been added to the team</p>
+                                    <small class="text-muted">2h ago</small>
+                                </div>
+                                <div class="btn-group pull-right activity-actions">
+                                    <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-ios-arrow-down"></i>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a href="#">Message Jason</a></li>
+                                        <li><a href="#">Assign Task</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media activity-item">
+                                <i class="fa fa-file-word-o pull-left"></i>
+                                <div class="media-body">
+                                    <p class="activity-title">New file <a href="#">Project Proposalv2.docx</a> has been uploaded by <a href="#">Antonius</a></p>
+                                    <small class="text-muted">3h ago</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media activity-item">
+                                <i class="fa fa-printer pull-left text-warning"></i>
+                                <div class="media-body">
+                                    <p class="activity-title">You have <a href="#">pending documents</a> on the printer server</p>
+                                    <small class="text-muted">23h ago</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media activity-item">
+                                <i class="fa fa-flag pull-left text-success"></i>
+                                <div class="media-body">
+                                    <p class="activity-title">Project: <a href="#">Phase 1</a> has been flagged as completed by <a href="#">Antonius</a></p>
+                                    <small class="text-muted">Yesterday</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media activity-item">
+                                <a href="#" class="pull-left">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="Avatar" class="media-object avatar">
+                                </a>
+                                <div class="media-body">
+                                    <p class="activity-title"><a href="#">Jane Doe</a> has updated file <a href="#">Marketing Campaign.docx</a></p>
+                                    <small class="text-muted">Yesterday</small>
+                                    <div class="activity-attachment">
+                                        <div class="well well-sm">
+                                            <strong>Revision Note:</strong>
+                                            <p>Professionally evolve corporate services without ethical leadership. Proactively re-engineer client-focused infrastructures before alternative potentialities. Competently predominate just in time e-tailers for leveraged solutions.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-group pull-right activity-actions">
+                                    <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-ios-arrow-down"></i>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a href="#">Message Jane Doe</a></li>
+                                        <li><a href="#">Assign Task</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn btn-default center-block"><i class="fa fa-ios-refresh"></i> Load more GetAllTasksByUserId.Task(10) ? where DateTime.Now > DateTime.RemoveDays(3) ??</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <!-- MY TODO LIST -->
+                <div class="widget">
+                    <div class="widget-header clearfix">
+                        <h3><i class="fa fa-calendar"></i> <span>Assign Roles = SiteOwner / Contractor</span></h3>
+                        <div class="btn-group widget-header-toolbar">
+                            <a href="#" title="Expand/Collapse" class="btn btn-link btn-toggle-expand"><i class="fa fa-ios-arrow-up"></i></a>
+                            <a href="#" title="Remove" class="btn btn-link btn-remove"><i class="fa fa-ios-close-empty"></i></a>
+                        </div>
+                    </div>
+                    <div class="widget-content">
+                        <ul class="list-unstyled simple-todo-list">
+                            <li>
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" checked="checked">
+                                    <span class="todo-text">Upload new revision</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox">
+                                    <span class="todo-text">Responsive test</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" checked="checked">
+                                    <span class="todo-text">Cross-browser check</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox">
+                                    <span class="todo-text">Social media research</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox">
+                                    <span class="todo-text">Conduct A/B test</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- END MY TODO LIST -->
+                <!-- RECENT FILES -->
+                <!-- Modal -->
+                @{ Html.RenderAction("AddNewImageFolder", "Site"); }
+                <div class="widget-content">
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#imgModal">
+                        <i class="fa fa-file"></i> Add Image Folder
+                    </button>
+
+                    <!--Show Category List of Sites w/ images-->
+                    <!--That means creating a site will be like creating a product for a store.-->
+                    <!-- Use the Product Category Model-->
+                    <a id="showfiles" href="#"> <i class="fa fa-folder"></i> Create New Folder</a>
+                </div>
+            </div>
+            <!-- END RECENT FILES -->
+        </div>
+        <div class="form-group">
+            <div class="media-body">
+                <div class="activity-attachment">
+                    <div class="well well-sm">
+                        <strong>Select Image Folder:</strong>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+            <div id="PreSiteImg">
+                @foreach (var item in Model.ImageListOfIds)
+                {
+                    <ul style="float: left;">
+                        <li>
+                            <img class="img-responsive" style="height: 100px; width: auto;" src="@Url.Action("GetImage", "Site", new { @id= item.ImgObjId })" />
+                        </li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var readURL = function (input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.avatar').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".file-upload").on('change', function () {
+                readURL(this);
+            });
+        });
+    </script>
+    
+    @Scripts.Render("~/bundles/jqueryval")
+}

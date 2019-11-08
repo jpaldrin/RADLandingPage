@@ -1,0 +1,310 @@
+﻿@model External.RadProApp.ViewModel.SiteViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" />
+<link href="https://cdn.datatables.net/plug-ins/1.10.20/integration/font-awesome/dataTables.fontAwesome.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/1.6.0/css/buttons.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<link href="~/Content/dashboard/css/datatableOverrides.css" rel="stylesheet" />
+<style>
+    ul li {
+        list-style: none !important;
+    }
+    form label {
+  display: inline-block;
+  width: 100px;
+}
+
+form div {
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  margin-left: 5px;
+}
+
+label.error {
+  display: inline;
+}
+    .bg-rad {
+        background-color: rgba(90, 40, 25, 0.00) !important;
+    }
+
+    .bg-body-modal {
+        background: url('../../Image/site/logo_steel.png') 50% center;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin-bottom: 100px;
+    }
+
+    .input-group-text {
+        color: #ffffff !important;
+        background-color: rgba(0, 0, 0, 0.56) !important;
+        border: 1px solid rgba(0, 0, 0, 0.62) !important;
+        font-weight: 700;
+    }
+
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.50);
+    }
+
+    .modal-content {
+        border: 5px solid rgba(0, 0, 0, 0.50) !important;
+    }
+
+    .input-group-sm > .form-control, .input-group-sm > .input-group-prepend > .input-group-text, .input-group-sm > .input-group-append > .input-group-text, .input-group-sm > .input-group-prepend > .btn, .input-group-sm > .input-group-append > .btn {
+        width: 100px !important;
+    }
+    table.dataTable > tbody > tr.child span.dtr-title {
+        display: inline-block;
+        color: #ff6a00;
+        min-width: 150px !important;
+        font-weight: bold;
+    }
+    table.dataTable tbody tr {
+    background-color: #00000014 !important;
+}
+ 
+</style>
+<script src="~/Scripts/site/siteIndex.js"></script>
+<div class="container">
+    <div align="center" aria-readonly="true" aria-haspopup="true">
+        &nbsp;
+        <p for="Status">Site Status</p>
+        <div class="" id="table"></div>
+        <br />
+    </div>
+    <table id="siteIndex" class="table table-hover text-dark dt-responsive nowrap nochkboxtab" width="100%" cellspacing="0">
+        <thead class="filters">
+            <tr>
+                <th data-priority="0">Id</th>
+                <th data-priority="1">Site Name</th>
+                <th>Category</th>
+                <th>App No.</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Post</th>
+                <th>Status</th>
+                <th>Version</th>
+                <th>Project Type</th>
+                <th>Approved By</th>
+                <th>Last Modified</th>
+                <th>Last Modified By</th>
+                <th>Site Class</th>
+                <th>Site Type</th>
+                <th>Plan Year</th>
+                <th>Market</th>
+                <th>Vendor</th>
+                <th>Region</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th><small><b>Control(s):</b></small></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createNewSite" tabindex="-1" role="dialog" aria-labelledby="createNewSiteTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
+        <div class="modal-content  bg-body-modal">
+            
+            <form id="createNewSite" method="post" class="form-horizontal">
+                <fieldset>
+                    <div class="modal-header bg-rad text-light">
+                        <h5 class="modal-title bg-transparent" id="exampleModalLongTitle">Create New Site</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-8 col-sm-6">
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="name">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Site Name</span>
+                                        </div>
+                                        <input id="name" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                       
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="category">Name (required, category)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Category</span>
+                                        </div>
+                                        <input id="category" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <label for="appno">Name (required, at least 2 characters)</label>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">App No.</span>
+                                        </div>
+                                        <input id="appno" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Address</span>
+                                        </div>
+                                        <input id="address" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="city">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">City</span>
+                                        </div>
+                                        <input id="city" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="state">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">State</span>
+                                        </div>
+                                        <input id="state" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="post">Name (required, at least 5 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Post</span>
+                                        </div>
+                                        <input id="post" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                      
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="status">Name (required, at Select list of: Types)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Status</span>
+                                        </div>
+                                        <input id="status" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                      
+                                    </div>
+                                </div>
+
+                                <div class="col-4 col-sm-6">
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="version">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Version</span>
+                                        </div>
+                                        <input id="version" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                     
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="projecttype">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Project Type</span>
+                                        </div>
+                                        <input id="projecttype" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                       
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="approvedby">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Approved By</span>
+                                        </div>
+                                        <input id="approvedby" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                       
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="siteclass">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Site Class</span>
+                                        </div>
+                                        <input id="siteclass" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                      
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="sitetype">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Site Type</span>
+                                        </div>
+                                        <input id="sitetype" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                      
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="planyear">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Plan Year</span>
+                                        </div>
+                                        <input id="planyear" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                      
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="market">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Market</span>
+                                        </div>
+                                        <input id="market" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                      
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="vendor">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Vendor</span>
+                                        </div>
+                                        <input id="vendor" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                  
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="region">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Region</span>
+                                        </div>
+                                        <input id="region" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                    
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="latitude">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Latitude</span>
+                                        </div>
+                                        <input id="latitude" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                    
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <label for="longitude">Name (required, at least 2 characters)</label>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Longitude</span>
+                                        </div>
+                                        <input id="longitude" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                                     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pull-right">
+                                <div style="padding-right: 25px;">
+                                    <input id="btnClear" type="button" class="btn btn-link" value="Clear" data-dismiss="modal" />
+                                    <input id="btnAdd" type="button" value="Add New Site" class="btn btn-secondary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.0/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/responsive.bootstrap.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

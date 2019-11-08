@@ -1,0 +1,116 @@
+﻿@model External.RadProApp.ViewModel.UserIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.bootstrap.min.css" />
+<link href="~/Content/dashboard/css/datatableOverrides.css" rel="stylesheet" />
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "searchform" }))
+{
+    <script>
+        $(document).ready(function () {
+            var usersTable = $('#tbl').DataTable({
+                responsive: {
+                    details: {
+                        display: $.fn.dataTable.Responsive.display.modal({
+                            header: function (row) {
+                                var data = row.data();
+                                return data[0] + ' ' + data[1];
+                            }
+                        }),
+                        renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                            tableClass: 'table'
+                        })
+                    }
+                },
+                columnDefs: [
+                    { responsivePriority: 1, targets: 4 },
+                    { responsivePriority: 1, targets: -1 }
+                ],
+
+                buttons: [
+                    'excel'
+                ],
+                "bJqueryUI": true,
+                "bPaginate": true,
+                "aaSorting": [[1, 'asc']],
+                "aoPreSearchCols": [[1]],
+
+
+                lengthMenu: [
+                    [10, 20, 50, 1000],
+                    ['10', '20', '50', 'all']
+                ],
+
+                "language": {
+                    "lengthMenu": "Display _MENU_ records per page",
+                    "zeroRecords": "RadProSite No-Record(s)",
+                    "info": "Showing page _PAGE_ of _PAGES_",
+                    "infoEmpty": "RadProSite",
+                    "infoFiltered": "(_MAX_) record"
+                }
+            });
+        });
+    </script>
+}
+<div class="container">
+    <table id="tbl" class="table table-dark dt-responsive nowrap nochkboxtab" width="100%" cellspacing="10">
+        <thead class="filters">
+            <tr>
+                <th width="200">Image</th>
+                <th data-priority="0">User</th>
+                <th width="200">Address</th>
+                <th width="200">Telephone</th>
+                <th width="250" data-priority="1">Links</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (@Model != null)
+            {
+                for (var i = 0; i < Model.GetAllUsersForSearchScreen.Count; i++)
+                {
+                    if (Model.GetAllUsersForSearchScreen[i].Email != null)
+                    {
+                        <tr id="@Model.GetAllUsersForSearchScreen[i].Id">
+                            <td>
+                                @if (Model.GetAllUsersForSearchScreen[i].ImageMimeType != null)
+                                {
+                                    <img src="@Url.Action("GetImage", "UsersAdmin", new { @id = Model.GetAllUsersForSearchScreen[i].Id })" class="img-responsive avatar rounded-circle img-thumbnail" width="75" alt="radprosite.com" />
+                                }
+                                else
+                                {
+                                    <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="img-responsive avatar rounded-circle img-thumbnail" width="75" height="75" alt="radprosite.com">
+                                }
+
+                            </td>
+                            <td class="fit-width">
+                                @Model.GetAllUsersForSearchScreen[i].FName  @Model.GetAllUsersForSearchScreen[i].LName
+                            </td>
+                            <td>
+                                @Model.GetAllUsersForSearchScreen[i].Address
+                                @Model.GetAllUsersForSearchScreen[i].State
+                                @Model.GetAllUsersForSearchScreen[i].PostalCode
+                            </td>
+                            <td>
+                                @Model.GetAllUsersForSearchScreen[i].Telephone
+                            </td>
+                            <td style="text-align: center">
+
+                                <a href="https://radprosite.com/UsersAdmin/Edit/@Model.GetAllUsersForSearchScreen[i].Id"><i class="fa fa-edit fa-1x text-success"></i></a><span style="margin-left:5px;"></span>
+                                <a href="https://radprosite.com/UsersAdmin/Details/@Model.GetAllUsersForSearchScreen[i].Id"><i class="fa fa-info fa-1x text-info"></i></a><span style="margin-left:5px;"></span>
+                                <a href="https://radprosite.com/UsersAdmin/Delete/@Model.GetAllUsersForSearchScreen[i].Id"><i class="fa fa-trash fa-1x text-danger"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/responsive.bootstrap.min.js"></script>

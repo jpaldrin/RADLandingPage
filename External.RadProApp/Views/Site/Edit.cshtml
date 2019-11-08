@@ -1,0 +1,22 @@
+﻿@model External.RadProApp.ViewModel.SiteViewModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("Edit", "Site", FormMethod.Post, new { enctype = "multipart/form-data", @id = "edit-site" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+      
+
+    </div>
+}
+
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}

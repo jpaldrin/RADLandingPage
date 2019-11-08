@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Confirm Email";
+}
+
+<div style="margin-top:3.5%;"></div>
+<div class="container">
+    <section>
+        <div class="section-header text-center">
+            <div>
+                <h3>Thank you validating your account!</h3>
+                    <img src="https://radprosite.com/Image/site/logo.png" height="280" width="auto" alt="radprosite.com" />
+                <h4>
+                    @Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+                </h4>
+                <p>
+                    <br />
+                    Radio Antenna Developers &copy; 2019 All Rights Reserved
+                    <br />
+
+                </p>
+            </div>
+        </div>
+    </section>
+</div>

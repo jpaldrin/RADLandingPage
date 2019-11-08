@@ -1,0 +1,143 @@
+﻿@model External.RadProApp.ViewModel.UserIndexViewModel
+@using Microsoft.AspNet.Identity
+<style>
+    .btn-menu-trigger {
+        background: url(https://radprosite.com/Image/site/linked-inImage.png);
+        height: 45px;
+        width: 45px;
+        background-size: contain;
+        display: inline-block;
+        cursor: pointer;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+ 
+</style>
+@if (Model.GetAllUsersForSearchScreen != null)
+{
+    for (var i = 0; i < Model.GetAllUsersForSearchScreen.Count; i++)
+    {
+        if (Model.GetAllUsersForSearchScreen[i].FName != null)
+        {
+            <nav class="navbar navbar-steel navbar-expand fixed-top">
+                <div class="pull-left" id="sidebarToggle" href="/">
+                    <p class="text-light">
+                        <i><b><i class="btn-menu-trigger"></i>RadProSite</b></i> 
+                    </p>
+                </div>
+                <a class="navbar-brand mr-1" href="#">
+
+                    @*<i><span style="color: #ff0000;"><b>R</b></span><span style="color: #fff;"><i class="fas fa-broadcast-tower"></i></span><span style="color: #ff0000;"><b>D</b></span></i><span class="text-warning" style="margin-left: 0; padding-right: 25px;">
+                            <span style="font-size: .75em;"><i><b>ProSite</b></i></span>
+                        </span>*@
+                </a>
+
+                <!-- Navbar Search -->
+                <small class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+                    <span class="badge badge-dark"> @Model.GetAllUsersForSearchScreen[i].FName @Model.GetAllUsersForSearchScreen[i].LName / Logged-In: <span id="Date"> </span> <span id="hours">:</span> <span id="min"> </span> <span id="sec"></span></span>
+                </small>
+
+                <!-- Navbar -->
+                <ul class="navbar-nav ml-auto ml-md-0">
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bell fa-fw"></i>
+                            <span class="badge badge-danger">9+</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
+                            <a class="dropdown-item" href="#"><i class="fas fa-sms fa-fw"></i> SMS Texting</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-envelope fa-fw"></i>
+                            @*<span class="badge badge-danger">7</span>*@
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
+                            <a class="dropdown-item" href="Mail/Inbox"><i class="fas fa-envelope-open fa-fw"></i> Inbox</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-paper-plane fa-fw"></i> Send</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            @if (Request.IsAuthenticated)
+                            {
+                                using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+
+                                    <a class="dropdown-item" href="/UsersAdmin/Edit/@Model.GetAllUsersForSearchScreen[i].Id">
+
+                                        @if (Model.GetAllUsersForSearchScreen[i].ImageMimeType != null)
+                                        {
+                                            <img src="@Url.Action("GetImage", "UsersAdmin", new { @id = Model.GetAllUsersForSearchScreen[i].Id })" class="img-responsive avatar rounded-circle" width="25" height="25" alt="radprosite.com" />
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-image fa-fw"></i>
+                                        }
+
+
+                                        @Model.GetAllUsersForSearchScreen[i].FName  @Model.GetAllUsersForSearchScreen[i].LName
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()" data-toggle="modal" data-target="#logoutModal">
+
+                                        <i class="fas fa-fw fa-power-off"></i>
+
+                                        Logout
+                                    </a>
+
+                                }
+                            }
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <div class="dropdown-divider"></div>
+
+
+                            }
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-light bg-danger">
+
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                @if (Model.GetAllUsersForSearchScreen[i].ImageMimeType != null)
+                                {
+                                    <img src="@Url.Action("GetImage", "UsersAdmin", new { @id = Model.GetAllUsersForSearchScreen[i].Id })" class="img-responsive avatar rounded-circle" width="50" height="50" alt="radprosite.com" />
+                                }
+                                else
+                                {
+                                    <i class="fas fa-image fa-fw"></i>
+                                }
+                                Ready to Leave @Model.GetAllUsersForSearchScreen[i].FName ?
+                            </h5>
+                            <button class="close text-light" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">Please come again. Thank-you</div>
+                        <div class="modal-footer">
+                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <a class="btn btn-primary" href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                                <button class="btn btn-link" data-dismiss="modal">Cancel</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+<script src="~/Scripts/site/clock.js"></script>

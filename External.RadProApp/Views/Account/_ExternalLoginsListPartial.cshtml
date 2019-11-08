@@ -1,0 +1,58 @@
+﻿@model External.RadProApp.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+ 
+    <style>
+        .btn-linkedin {
+            background: #8fc8de;
+            border-radius: 0;
+            color: #fff;
+            border-width: 1px;
+            border-style: solid;
+            border-color: #084461;
+        }
+
+            .btn-linkedin:link, .btn-linkedin:visited {
+                color: #fff;
+            }
+
+            .btn-linkedin:active, .btn-linkedin:hover {
+                background: #084461;
+                color: #fff;
+            }
+            .padd-bottom{
+                margin-bottom: -10px;
+            }
+    </style>
+ 
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=313242">this article</a>
+                for details on setting up this ASP.NET application to support logging in via external services.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }))
+        {
+            @Html.AntiForgeryToken()
+<div id="socialLoginList">
+    <p class="padd-bottom">
+        @foreach (AuthenticationDescription p in loginProviders)
+        {
+            <button type="submit" class="button btn-linkedin" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account"> Log<i class="fa fa-linkedin text-info"></i> LinkedIn</button>
+        }
+      <br />
+    </p>
+    
+     
+    
+</div>
+        }
+    }
+}

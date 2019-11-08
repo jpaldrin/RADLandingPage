@@ -1,0 +1,33 @@
+﻿@model DAL.Radio.Model.Site
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div style="margin-top: 75px;">
+                <b class="text-danger">Permanent deletion cannont be undone.</b>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <h3 class="text-danger">Are you sure you want to delete this?</h3>
+            <div>
+                <h4>Site: @Html.DisplayNameFor(model => model.Name)</h4>
+                <hr />
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color">
+                        <input id="btnGo" type="submit" value="Delete" class="btn btn-default" /> |
+                        @Html.ActionLink("Cancel", "Index")
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
